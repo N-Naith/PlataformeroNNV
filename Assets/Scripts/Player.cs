@@ -33,10 +33,7 @@ public class Player : MonoBehaviour
 
     private float lastShoot;
 
-    private GameObject warpA;
-
-    private GameObject warpB;
-
+    private GameObject destinyWarp;
 
     // Start is called before the first frame update
     void Start()
@@ -87,6 +84,11 @@ public class Player : MonoBehaviour
                 lastShoot = Time.time;
             }
 
+            if (Input.GetKeyDown(KeyCode.S) && destinyWarp)
+            {
+                transform.position = destinyWarp.transform.position;
+            }
+
             DeathOnFall();
         }
     }
@@ -119,7 +121,9 @@ public class Player : MonoBehaviour
                     Vector2 difference =
                         (transform.position - enemy.transform.position);
                     float knockbackDirection = difference.x >= 0 ? 1 : -1;
-                    rigidBody2D.velocity = new Vector2(knockbackDirection * knockback,knockback / 2);
+                    rigidBody2D.velocity =
+                        new Vector2(knockbackDirection * knockback,
+                            knockback / 2);
                 }
             }
             else
@@ -166,18 +170,27 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(!isInCooldown){
-            rigidBody2D.velocity = new Vector2(horizontal, rigidBody2D.velocity.y);
+        if (!isInCooldown)
+        {
+            rigidBody2D.velocity =
+                new Vector2(horizontal, rigidBody2D.velocity.y);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.name == "Tilemap") isGrounded = true;
-        if (collider.name == "PointA" || collider.name == "PointB"){
-            GameObject warp = collider.transform.parent,gameObject;
-            warpA = warp.Find("PointA").gameObject;
-            warpB = warp.Find("PointB").gameObject;
+        if (collider.name == "PointA" || collider.name == "PointB")
+        {
+            GameObject warp = collider.transform.parent.gameObject;
+            if (collider.name == "PointA")
+            {
+                destinyWarp = warp.transform.Find("PointB").gameObject;
+            }
+            else
+            {
+                destinyWarp = warp.transform.Find("PointA").gameObject;
+            }
         }
     }
 
@@ -186,15 +199,8 @@ public class Player : MonoBehaviour
         if (collider.name == "Tilemap") isGrounded = false;
         if (collider.name == "PointA" || collider.name == "PointB")
         {
-            GameObject warp = collider.transform.parent.gameObject;
-            warpA = null;
-            warpB = null;
-        }
-    }
-
-    private void assignWarps(collider2D collider){
-        GameObject warp = collider.transform.parent.gameObject;
-        if (collider.){
+            destinyWarp = null;
         }
     }
 }
+
