@@ -62,4 +62,3 @@ public class MovingEnemy : Enemy
             new Vector2(-transform.localScale.x, transform.localScale.y);
     }
 }
-
